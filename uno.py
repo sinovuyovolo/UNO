@@ -49,3 +49,48 @@ def can_play_card(card, top_card, current_color):
          return True
      
      return False #if not true it should return False
+
+# function for setting up the game 
+def play_game(): 
+    # we create the deck using the function we made 
+    deck = create_deck()
+    
+    # we then create the players will play 
+    # each player must have 7 cards
+    player_hands = [ [deck.pop() for _ in range(7)],[deck.pop() for _ in range(7)] ]
+    
+    # creating a list for the cards that will be played 
+    discard_pile = []
+    
+    # you get the card from top of the deck and it becomes your top card 
+    top_card = deck.pop()
+     
+     # checks if you drew a draw 4 
+     # if it is you draw a new card 
+    while "Draw 4" in top_card:
+        deck.append(top_card); random.shuffle(deck); top_card = deck.pop()
+        
+        # since the card is now legal we put it down
+    discard_pile.append(top_card)
+    
+    # the colour that is being played currently 
+    current_color = random.choice(COLORS) if "Wild" in top_card else top_card.split(" ")[0]
+    turn = 0
+    winner = None
+
+   # a function to check and reshuffle 
+    def check_and_reshuffle(): 
+    
+    # check if the deck has less cards
+        if len(deck) < 5:
+            print("Deck is low. Reshuffling ") 
+            # saves the top card 
+            top_card_save = discard_pile.pop() 
+            
+            # adds back the pile and shuffles it 
+            deck.extend(discard_pile)
+            random.shuffle(deck) 
+            
+            # cleans the pile
+            discard_pile.clear()
+            discard_pile.append(top_card_save)
