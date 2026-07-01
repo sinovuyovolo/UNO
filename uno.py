@@ -94,3 +94,137 @@ def play_game():
             # cleans the pile
             discard_pile.clear()
             discard_pile.append(top_card_save)
+
+# showing the player info 
+    def display_turn_info(): 
+        
+        # shows whos playing 
+        player_name = f"Player {turn + 1}"
+        my_hand = player_hands[turn]
+        print(f"\n {player_name}'s turn!")
+        print(f"Top Card: [{top_card}] (Color: {current_color})")
+        print("Your Hand:") 
+        
+        # shows the players hand 
+        for i, card in enumerate(my_hand):
+            print(f"  {i + 1}: [{card}]")
+
+    # handles the players taking turns 
+    def handle_turn(): 
+        
+        # being able to change the variables 
+        nonlocal turn, winner, top_card, current_color
+        
+        # checking turns 
+        my_hand = player_hands[turn]
+        player_name = f"Player {turn + 1}"
+        
+        # the card play
+        choice = input("Play a card (by number) or 'draw': ").lower()
+
+# using uno rules to play for each turn 
+        if choice == 'draw':
+            drawn_card = deck.pop()
+            my_hand.append(drawn_card)
+            print(f"{player_name} drew [{drawn_card}]. Turn over.")
+            turn = (turn + 1) % 2
+            return # end this turn
+
+        try: 
+            # get the actual card from the hand 
+            choice_index = int(choice) - 1
+            card_they_played = my_hand[choice_index]
+            
+            # using the can pplay card function 
+            # if the card can be played 
+            if can_play_card(card_they_played, top_card, current_color):
+                
+                # play the card
+                top_card = my_hand.pop(choice_index)
+                discard_pile.append(top_card)
+                print(f"{player_name} plays [{top_card}]")
+
+                # check for win 
+                if not my_hand:
+                    winner = player_name
+                    return # end the turn (and the game)
+                
+                if len(my_hand) == 1:
+                    print(f"!!!! {player_name} shouts UNO")
+                
+                # handle wild color
+                if "Wild" in card_they_played:
+                    color_choices = ["Red", "Green", "Blue", "Yellow"]
+                    while True:
+                        # let the player choose the card they want to pick 
+                        c_choice = input("Pick a color (1-4 for R,G,B,Y): ")
+                        if c_choice in ['1','2','3','4']: 
+                            
+                            # getting the position of the current_color of the card being played 
+                            current_color = color_choices[int(c_choice) - 1]
+                            print(f"{player_name} chose {current_color}!")
+                            break
+                else: 
+                      # if the card is a normal card then checks the colour 
+                    current_color = card_they_played.split(" ")[0]
+                    
+                # apply effects for taking turns 
+                opponent_turn = (turn + 1) % 2
+                opponent_hand = player_hands[opponent_turn]
+                opponent_name = f"Player {opponent_turn + 1}"
+                skip_turn = False
+
+                # check the actions for each turn 
+                if "Skip" in card_they_played or "Reverse" in card_they_played:
+                    print(f" {opponent_name} gets skipped")
+                    skip_turn = True
+                elif "Draw 2" in card_they_played:
+                    print(f" {opponent_name} draws 2 and is skipped")
+                    opponent_hand.extend([deck.pop() for _ in range(2)])
+                    skip_turn = True
+                elif "Draw 4" in card_they_played:
+                    print(f" {opponent_name} draws 4 and is skipped")
+                    opponent_hand.extend([deck.pop() for _ in range(4)])
+                    skip_turn = True
+                    
+                # set next turny_played:
+                    print(f" {opponent_name} draws 2 and is skipped")
+                    opponent_hand.extend([deck.pop() for _ in range(2)])
+                    skip_turn = True
+                elif "Draw 4" in card_they_played:
+                    print(f" {opponent_name} draws 4 and is skipped")
+                    opponent_hand.extend([deck.pop() for _ in range(4)])
+                    skip_turn = True
+                    
+                # set next turny_played:
+                    print(f" {opponent_name} draws 4 and is skipped")
+                    opponent_hand.extend([deck.pop() for _ in range(4)])
+                    skip_turn = True
+                    
+                # set next turn
+                if not skip_turn:
+                    turn = (turn + 1) % 2
+                # if skip turn is true, turn just stays the same
+                
+                # error validation 
+            else:
+                print(" Can't play that ... Try again")
+        
+        # validation 
+        except (ValueError, IndexError):
+            print("Not a real choice ... Pick a number or draw")
+
+    # if there isnt a winner yet 
+    while winner is None:
+        
+        check_and_reshuffle() 
+        display_turn_info() 
+        handle_turn() 
+        
+    # game over
+    print(f"\n GAME OVER ")
+    print(f" {winner} WINS ")
+
+# run the game
+if __name__ == "__main__":
+    play_game()
