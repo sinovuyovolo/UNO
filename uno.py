@@ -1,4 +1,5 @@
 import random
+from colorama import Fore,Style,init
 
 COLORS = ["Red", "Blue", "Green", "Yellow"]
 ACTIONS = ["Reverse", "Skip", "Draw 2"]
@@ -83,7 +84,7 @@ def play_game():
     
     # check if the deck has less cards
         if len(deck) < 5:
-            print("Deck is low. Reshuffling ") 
+            print(Fore.LIGHTGREEN_EX + "Deck is low. Reshuffling ") 
             # saves the top card 
             top_card_save = discard_pile.pop() 
             
@@ -101,9 +102,9 @@ def play_game():
         # shows whos playing 
         player_name = f"Player {turn + 1}"
         my_hand = player_hands[turn]
-        print(f"\n {player_name}'s turn!")
+        print(Fore.CYAN + f"\n {player_name}'s turn!")
         print(f"Top Card: [{top_card}] (Color: {current_color})")
-        print("Your Hand:") 
+        print(Fore.LIGHTRED_EX + "Your Hand:") 
         
         # shows the players hand 
         for i, card in enumerate(my_hand):
@@ -222,8 +223,8 @@ def play_game():
         handle_turn() 
         
     # game over
-    print(f"\n GAME OVER ")
-    print(f" {winner} WINS ")
+    print(Fore.BLUE + f"\n GAME OVER ")
+    print(Fore.GREEN + f" {winner} WINS ")
 
 # run the game
 if __name__ == "__main__":
