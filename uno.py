@@ -13,3 +13,16 @@ def create_deck():
             deck.append(card)
             if num != 0:
                 deck.append(card)
+
+    for color in COLORS:
+        for action in ACTIONS:
+            card = f"{color} {action}"
+
+            deck.append(card)
+            deck.append(card)
+    for _ in range(4):
+        deck.append("Wild")
+        deck.append(card)
+
+    random.shuffle(deck)
+    return deck
